@@ -1,0 +1,31 @@
+<!-- templates/admin/custom_page.html -->
+
+{% extends "admin/base_site.html" %}
+
+{% block title %}AWS Monitor{% endblock %}
+
+{% block content %}
+<div class="app-custom module">
+    <h1>DynamoDB Monitor</h1>
+    
+    <p>Database Status: {{ db_metadata.DBOnline|yesno:"Online,Offline" }}</p>
+    
+    <h2>Tables:</h2>
+    <ul>
+        {% for table in db_metadata.TableList %}
+            <li>{{ table }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Table Details:</h2>
+    {% for table_detail in db_metadata.TableDetails %}
+        <div>
+            <h3>{{ table_detail.TableName }}</h3>
+            <p><strong>Status:</strong> {{ table_detail.TableStatus }}</p>
+            <p><strong>Creation Date:</strong> {{ table_detail.CreationDateTime }}</p>
+            <p><strong>Item Count:</strong> {{ table_detail.ItemCount }}</p>
+            <!-- Add more details as needed -->
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+import boto3
+from botocore.exceptions import ClientError
+from django.conf import settings
+
+
+class DynamoDbAdminServiceController:
+    def __init__(self, resource_name: str, region_name: str) -> None:
+        self.dynamodb = boto3.resource(resource_name, settings.AWS_REGION_NAME)
+        self.client = boto3.client(resource_name, settings.AWS_REGION_NAME)
+
+    def get_db_metadata(self):
+        try:
+            # Check if DynamoDB is online
+            self.client.list_tables(Limit=1)
+            db_online = True
+
+            # Fetching the list of all tables
+            table_list = self.client.list_tables()
+
+            # Getting details and item count of each table
+            table_details = []
+            for table_name in table_list["TableNames"]:
+                table_info = self.client.describe_table(TableName=table_name)
+                table_info["Table"]["ItemCount"] = self.client.describe_table(
+                    TableName=table_name
+                )["Table"]["ItemCount"]
+                table_details.append(table_info["Table"])
+
+        except ClientError as e:
+            print(e.response["Error"]["Message"])
+            db_online = False
+            return {"DBOnline": db_online}
+        else:
+            return {
+                "DBOnline": db_online,
+                "TableList": table_list["TableNames"],
+                "TableDetails": table_details,
+            }
+
+    def sync_all_dynamodb_tables(self):
+        return
+
+    def sync_dynamodb_table(self):
+        return
+
+
+class DynamoDbUserServiceController:
+    def __init__(self, resource_name: str, region_name: str) -> None:
+        self.dynamodb = boto3.resource(resource_name, settings.AWS_REGION_NAME)
+
+    def sync_psql_item_with_dynamodb(self):
+        return

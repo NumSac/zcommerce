@@ -1,0 +1,15 @@
+<!-- templates/products/edit.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Product</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{% url 'products:detail' product.slug %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

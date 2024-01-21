@@ -1,0 +1,13 @@
+<!-- templates/products/delete.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Are you sure you want to delete "{{ product.name }}"?</h2>
+    <form method="post">{% csrf_token %}
+        <input type="submit" value="Confirm" class="btn btn-danger">
+        <a href="{% url 'products:detail' product.slug %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
