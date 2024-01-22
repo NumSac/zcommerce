@@ -4,9 +4,21 @@ from django.conf import settings
 
 
 class DynamoDbAdminServiceController:
-    def __init__(self, resource_name: str, region_name: str) -> None:
-        self.dynamodb = boto3.resource(resource_name, settings.AWS_REGION_NAME)
-        self.client = boto3.client(resource_name, settings.AWS_REGION_NAME)
+    def __init__(self) -> None:
+        self.dynamodb = boto3.resource(
+            "dynamodb",
+            aws_access_key_id="dummy",
+            aws_secret_access_key="dummy",
+            region_name="us-west-2",
+            endpoint_url="http://dynamodb-local:8000",
+        )
+        self.client = boto3.client(
+            "dynamodb",
+            aws_access_key_id="dummy",
+            aws_secret_access_key="dummy",
+            region_name="us-west-2",
+            endpoint_url="http://dynamodb-local:8000",
+        )
 
     def get_db_metadata(self):
         try:

@@ -1,10 +1,10 @@
 from django.urls import path
 
-from .views import *
+from .views import DynamoDbInfoView, DynamoDbManageView
 
 app_name = "aws"
 
 urlpatterns = [
-    path("", aws_info_view, name="info"),
-    path("manage/", aws_manage_view, name="manage"),
+    path("", DynamoDbInfoView.as_view(), name="info"),
+    path("manage/", DynamoDbManageView.as_view(), name="manage"),
 ]
