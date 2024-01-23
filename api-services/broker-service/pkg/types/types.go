@@ -4,6 +4,12 @@ import (
 	"time"
 )
 
+type JsonResponse struct {
+	Error   bool   `json:"error"`
+	Message string `json:"Message"`
+	Data    any    `json:"data,omitempty"`
+}
+
 // User represents a user with a shopping cart.
 type User struct {
 	Username     string             `json:"username"`

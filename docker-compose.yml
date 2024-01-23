@@ -4,7 +4,7 @@ services:
   db:
     image: postgres
     volumes:
-      - ./data/postgres_data:/data/postgres
+      - ./docker/postgres_data:/data/postgres
     environment:
       POSTGRES_DB: zcommerce
       POSTGRES_USER: zcommerce_user

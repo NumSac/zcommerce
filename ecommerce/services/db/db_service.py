@@ -101,10 +101,10 @@ class AdminDbService:
     @staticmethod
     def backup_table(self, destination: str, db_object: Model) -> bool:
         try:
-            # Serialize the queryset to a JSON formatted string
+            # Serialize to Jspon
             data = serialize("json", db_object.objects.all())
 
-            # Ensure the destination directory exists
+            # Ensure the destination directorey exists
             os.makedirs(os.path.dirname(destination), exist_ok=True)
 
             # Write the data to the destination file
