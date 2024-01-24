@@ -29,5 +29,5 @@ urlpatterns = [
     ),  # Django's built-in auth views
     path("accounts/signup/", SignUpView.as_view(), name="signup"),  # Custom signup view
     path("accounts/login/", LoginView.as_view(), name="login"),  # Custom login view
-    path("products", include("products.urls")),
+    path("products/", include("products.urls")),
 ]

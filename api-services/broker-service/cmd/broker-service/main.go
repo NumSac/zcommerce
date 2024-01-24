@@ -15,8 +15,7 @@ const (
 	webPort = 8881
 )
 
-type Config struct {
-}
+type Config struct{}
 
 func main() {
 	var wait time.Duration

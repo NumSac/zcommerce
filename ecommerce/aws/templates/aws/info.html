@@ -8,6 +8,8 @@
 <div class="app-custom module">
     <h1>DynamoDB Monitor</h1>
     
+    <a href="{% url "aws:manage" %}">Manage Database</a>
+    
     <p>Database Status: {{ db_metadata.DBOnline|yesno:"Online,Offline" }}</p>
     
     <h2>Tables:</h2>
@@ -24,7 +26,6 @@
             <p><strong>Status:</strong> {{ table_detail.TableStatus }}</p>
             <p><strong>Creation Date:</strong> {{ table_detail.CreationDateTime }}</p>
             <p><strong>Item Count:</strong> {{ table_detail.ItemCount }}</p>
-            <!-- Add more details as needed -->
         </div>
     {% endfor %}
 </div>

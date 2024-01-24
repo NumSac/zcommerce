@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Sync Products with DynamoDB</h2>
+    <div class="mt-4">
+        <a href="{% url 'products:index' %}" class="btn btn-secondary">Back to Product List</a>
+    </div>
+    <div class="mt-4">
+        <h3>Products to Sync</h3>
+        <ul>
+            {% for product in products_to_sync %}
+            <li>{{ product.name }}</li>
+            {% endfor %}
+            {% if products_to_sync|length == 0 %}
+            <li>No products to sync.</li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h3>Products in DynamoDB</h3>
+        <ul>
+            {% for product in products_in_store %}
+            <li>{{ product.name }}</li>
+            {% endfor %}
+            {% if products_in_store|length == 0 %}
+            <li>No products found in DynamoDB.</li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="mt-4">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Sync Products</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

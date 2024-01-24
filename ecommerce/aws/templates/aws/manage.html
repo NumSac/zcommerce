@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>DynamoDB Management</h2>
+    <div class="mt-4">
+        <h3>Table Creation Status</h3>
+        <ul>
+            <li>Users Table: {% if users_table_created %}Created{% else %}Failed{% endif %}</li>
+            <li>Products Table: {% if products_table_created %}Created{% else %}Failed{% endif %}</li>
+            <li>Shopping Cart Table: {% if shopping_cart_table_created %}Created{% else %}Failed{% endif %}</li>
+            <li>Company Table: {% if company_table_created %}Created{% else %}Failed{% endif %}</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Create Tables</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

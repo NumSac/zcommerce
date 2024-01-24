@@ -1,35 +1,50 @@
-<!-- templates/products/index.html -->
-
 {% extends 'base.html' %}
 
 {% block content %}
 <div class="container mt-5">
     <h2>Product List</h2>
-    <div class="mt-4">
-        <a href="{% url 'products:create' %}" class="btn btn-success">Add New Product</a>
+    <!-- Filter Form -->
+    <div class="row mb-4">
+        <div class="col">
+            <form method="get" class="form-inline">
+                <input type="text" name="name" class="form-control mb-2 mr-sm-2" placeholder="Search by name">
+                <input type="number" name="min_price" class="form-control mb-2 mr-sm-2" placeholder="Min price">
+                <input type="number" name="max_price" class="form-control mb-2 mr-sm-2" placeholder="Max price">
+                <button type="submit" class="btn btn-outline-success mb-2">Filter</button>
+            </form>
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'products:create' %}" class="btn btn-success">Add New Product</a>
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'products:sync' %}" class="btn btn-success">Synchronize Products</a>
+        </div>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in product_list %}
+                <tr>
+                    <th scope="row">{{ product.id }}</th>
+                    <td><a href="{% url 'products:detail' product.id %}">{{ product.name }}</a></td>
+                    <td>${{ product.price }}</td>
+                    <td>
+                        <a href="{% url 'products:edit' product.slug %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'products:delete' product.slug %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No Products Yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Price</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-            <tr>
-                <th scope="row">{{ product.id }}</th>
-                <td><a href="{% url 'products:detail' product.slug %}">{{ product.name }}</a></td>
-                <td>${{ product.price }}</td>
-                <td>
-                    <a href="{% url 'products:edit' product.slug %}" class="btn btn-primary">Edit</a>
-                    <a href="{% url 'products:delete' product.slug %}" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+    {% endblock %}

@@ -1,5 +1,3 @@
-# users/models.py
-
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
@@ -8,7 +6,6 @@ from django.db import models
 
 # Custom User Auth object
 class CustomUser(AbstractUser):
-    # Add additional fields here if you need
     age = models.PositiveIntegerField(null=True, blank=True)
 
     is_company = models.BooleanField(
@@ -47,8 +44,6 @@ class CustomUser(AbstractUser):
 
 
 class CustomUserManager(BaseUserManager):
-    """Define a model manager for User model with no username field."""
-
     def _create_user(self, email, password, **extra_fields):
         """Create and save a User with the given email and password."""
         if not email:

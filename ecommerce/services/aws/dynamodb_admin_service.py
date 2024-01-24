@@ -1,6 +1,9 @@
 import boto3
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key
 from django.conf import settings
+
+from django.db.models import Model
 
 
 class DynamoDbAdminServiceController:
@@ -53,12 +56,4 @@ class DynamoDbAdminServiceController:
         return
 
     def sync_dynamodb_table(self):
-        return
-
-
-class DynamoDbUserServiceController:
-    def __init__(self, resource_name: str, region_name: str) -> None:
-        self.dynamodb = boto3.resource(resource_name, settings.AWS_REGION_NAME)
-
-    def sync_psql_item_with_dynamodb(self):
         return

@@ -13,9 +13,7 @@ from ecommerce.settings import AUTH_USER_MODEL
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=30, unique=True)
 
     class Meta:
         ordering = ("name",)
@@ -39,7 +37,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available = models.BooleanField(default=True)
     stock = models.PositiveIntegerField()
-    # listed = models.BooleanField(default=False)
+    listed = models.BooleanField(default=False)
+    mark_for_sync = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to="products/%Y/%m/%d", blank=True)
@@ -49,11 +48,20 @@ class Product(models.Model):
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Product, self).save(*args, **kwargs)
+        if not self.slug:  # If the slug is not set, generate one
+            self.slug = slugify(self.name)
+            original_slug = self.slug
+
+            # Ensure the slug is unique
+            num = 1
+            while Product.objects.filter(slug=self.slug).exists():
+                self.slug = f"{original_slug}-{num}"
+                num += 1
+
+        super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ("name",)
+        ordering = ("name", "created_at")
         index_together = (("id", "slug"),)
 
     def __str__(self):

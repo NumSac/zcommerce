@@ -2,19 +2,35 @@ from django.forms import ModelForm
 from .models import Product
 
 
-class ProductCreationForm(ModelForm):
+from django import forms
+from .models import Product
+
+
+class ProductCreationForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ("name", "description", "price", "available", "stock", "image")
+        fields = [
+            "category",
+            "name",
+            "description",
+            "price",
+            "available",
+            "mark_for_sync",
+            "stock",
+            "image",
+        ]
 
 
-class ProductDeletionForm(ModelForm):
+class ProductEditationForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["name"]
-
-
-class ProductEditationForm(ModelForm):
-    class Meta:
-        model = Product
-        fields = ("name", "description", "price", "available", "stock", "image")
+        fields = [
+            "category",
+            "name",
+            "description",
+            "price",
+            "available",
+            "mark_for_sync",
+            "stock",
+            "image",
+        ]

@@ -5,7 +5,13 @@ from django.conf import settings
 
 class DynamoDbTable:
     def __init__(self, table_name, key_schema, attribute_definitions, throughput):
-        self.dynamodb = boto3.resource("dynamodb", region_name=settings.AWS_REGION_NAME)
+        self.dynamodb = boto3.resource(
+            "dynamodb",
+            aws_access_key_id="dummy",
+            aws_secret_access_key="dummy",
+            region_name="us-west-2",
+            endpoint_url="http://dynamodb-local:8000",
+        )
         self.table_name = table_name
         self.key_schema = key_schema
         self.attribute_definitions = attribute_definitions
@@ -70,7 +76,6 @@ class ProductsTable(DynamoDbTable):
             ],
             attribute_definitions=[
                 {"AttributeName": "product_id", "AttributeType": "S"},
-                {"AttributeName": "category", "AttributeType": "S"},
             ],
             throughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
         )
@@ -90,14 +95,3 @@ class ShoppingCartTable(DynamoDbTable):
             ],
             throughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
         )
-
-
-# Usage
-users_table = UsersTable()
-users_table.create_table()
-
-company_table = CompanyTable()
-company_table.create_table()
-
-products_table = ProductsTable()
-products_table.create_table()
