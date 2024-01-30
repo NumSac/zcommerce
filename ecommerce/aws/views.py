@@ -6,12 +6,7 @@ from injector import inject
 
 
 from services.aws.dynamodb_admin_service import DynamoDbAdminServiceController
-from services.aws.dynamodb_initialize import (
-    UsersTable,
-    CompanyTable,
-    ProductsTable,
-    ShoppingCartTable,
-)
+from services.aws.dynamodb_initialize import DynamoDBInitialize
 
 
 class DynamoDbInfoView(UserPassesTestMixin, View):
@@ -41,17 +36,11 @@ class DynamoDbManageView(UserPassesTestMixin, View):
     def __init__(
         self,
         dynamodb_service: DynamoDbAdminServiceController,
-        users_table: UsersTable,
-        products_table: ProductsTable,
-        shopping_cart_table: ShoppingCartTable,
-        company_table: CompanyTable,
+        dynamodb_initializer: DynamoDBInitialize,
         **kwargs
     ):
         self.dynamodb_service = dynamodb_service
-        self.users_table = users_table
-        self.products_table = products_table
-        self.shopping_cart_table = shopping_cart_table
-        self.company_table = company_table
+        self.dynamodb_initializer = dynamodb_initializer
         super().__init__(**kwargs)
 
     def test_func(self):
@@ -59,30 +48,35 @@ class DynamoDbManageView(UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
-            # Fetch DynamoDB metadata using the injected service and compare them to local database entries
+            # Check if tables are already created
+            tables_created = self.dynamodb_initializer.are_tables_created()
+
+            # Fetch DynamoDB metadata using the injected service
             db_metadata = self.dynamodb_service.get_db_metadata()
 
-            context = {"db_metadata": db_metadata}
+            context = {
+                "db_metadata": db_metadata,
+                "tables_created": tables_created,
+            }
             return render(request, "aws/manage.html", context)
 
         except Exception as e:
             context = {"error_message": str(e)}
+            print(e)
             return render(request, "aws/error.html", context)
 
     def post(self, request, *args, **kwargs):
         try:
-            # Try to initiate the DynamoDB schema
-            products_table_created = self.products_table.create_table()
-            shopping_cart_table_created = self.shopping_cart_table.create_table()
-            company_table_created = self.company_table.create_table()
+            # Initialize DynamoDB tables using the db_initialize method
+            self.dynamodb_initializer.create_tables()
 
-            context = {
-                "products_table_created": products_table_created,
-                "shopping_cart_table_created": shopping_cart_table_created,
-                "company_table_created": company_table_created,
-            }
+            context = {"message": "Tables created"}
 
-            return render(request, "aws/manage.html", context)
         except Exception as e:
             context = {"error_message": str(e)}
-            return render(request, "aws/error.html", context)
+
+        return render(request, "aws/manage.html", context)
+
+
+def dynamodb_fetch_all_entries(request):
+    return

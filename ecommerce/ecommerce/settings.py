@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "products.apps.ProductsConfig",
+    "sync.apps.SyncConfig",
     "aws.apps.AwsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "middleware.check_owner_middleware.CheckOwnerMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

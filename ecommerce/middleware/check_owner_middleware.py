@@ -13,7 +13,6 @@ class CheckOwnerMiddleware:
             view = request.view
             # Get the object to be checked for ownership
             obj = view.get_object()
-            # Check if the user is the owner of the object
             if obj.owner != request.user.id:
                 raise Http404("You do not have permission to view this object.")
 

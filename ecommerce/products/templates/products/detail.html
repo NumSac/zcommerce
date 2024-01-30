@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>{{ product.name }}</h2>
+    <h2>{{ product.title }}</h2>
     <p>{{ product.description }}</p>
     <p><strong>Price:</strong> ${{ product.price }}</p>
     <a href="{% url 'products:edit' product.slug %}" class="btn btn-primary">Edit</a>

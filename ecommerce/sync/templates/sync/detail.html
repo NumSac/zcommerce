@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Product Details</h2>
+    <div class="mt-4">
+        <a href="{% url 'products:index' %}" class="btn btn-secondary">Back to Product List</a>
+    </div>
+    <div class="mt-4">
+        <h3>{{ product.title }}</h3>
+        <p><strong>Category:</strong> {{ product.category }}</p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+        <p><strong>Created At:</strong> {{ product.created_at }}</p>
+        <p><strong>Price:</strong> {{ product.price }}</p>
+        <p><strong>Stock:</strong> {{ product.stock }}</p>
+        <p><strong>Available:</strong> {{ product.available }}</p>
+        <p><strong>Slug:</strong> {{ product.slug }}</p>
+    </div>
+</div>
+{% endblock %}

@@ -3,20 +3,27 @@
 {% block content %}
 <div class="container mt-5">
     <h2>DynamoDB Management</h2>
-    <div class="mt-4">
-        <h3>Table Creation Status</h3>
-        <ul>
-            <li>Users Table: {% if users_table_created %}Created{% else %}Failed{% endif %}</li>
-            <li>Products Table: {% if products_table_created %}Created{% else %}Failed{% endif %}</li>
-            <li>Shopping Cart Table: {% if shopping_cart_table_created %}Created{% else %}Failed{% endif %}</li>
-            <li>Company Table: {% if company_table_created %}Created{% else %}Failed{% endif %}</li>
-        </ul>
+    {% if message %}
+    <div class="alert alert-success mt-4">
+        {{ message }}
     </div>
+    {% endif %}
+    {% if error_message %}
+    <div class="alert alert-danger mt-4">
+        {{ error_message }}
+    </div>
+    {% endif %}
     <div class="mt-4">
+        {% if tables_created %}
+        <div class="alert alert-info">
+            Tables have already been created.
+        </div>
+        {% else %}
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary">Create Tables</button>
         </form>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

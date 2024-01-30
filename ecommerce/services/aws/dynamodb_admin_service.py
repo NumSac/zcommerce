@@ -1,59 +1,62 @@
-import boto3
-from botocore.exceptions import ClientError
-from boto3.dynamodb.conditions import Key
-from django.conf import settings
-
-from django.db.models import Model
+from pynamodb.connection.base import Connection
+from pynamodb.exceptions import TableDoesNotExist
+from pynamodb.models import Model
+from pynamodb.exceptions import TableDoesNotExist
 
 
 class DynamoDbAdminServiceController:
-    def __init__(self) -> None:
-        self.dynamodb = boto3.resource(
-            "dynamodb",
+    def __init__(self):
+        self.connection = Connection(
             aws_access_key_id="dummy",
+            region="dummy",
             aws_secret_access_key="dummy",
-            region_name="us-west-2",
-            endpoint_url="http://dynamodb-local:8000",
-        )
-        self.client = boto3.client(
-            "dynamodb",
-            aws_access_key_id="dummy",
-            aws_secret_access_key="dummy",
-            region_name="us-west-2",
-            endpoint_url="http://dynamodb-local:8000",
+            host="http://dynamodb-local:8000",
         )
 
     def get_db_metadata(self):
         try:
-            # Check if DynamoDB is online
-            self.client.list_tables(Limit=1)
-            db_online = True
+            tables = self.connection.list_tables()
 
             # Fetching the list of all tables
-            table_list = self.client.list_tables()
+            table_list = [table for table in tables]
 
             # Getting details and item count of each table
             table_details = []
-            for table_name in table_list["TableNames"]:
-                table_info = self.client.describe_table(TableName=table_name)
-                table_info["Table"]["ItemCount"] = self.client.describe_table(
-                    TableName=table_name
-                )["Table"]["ItemCount"]
-                table_details.append(table_info["Table"])
+            for table_name in table_list:
+                try:
+                    table_info = self.connection.describe_table(table_name)
+                    table_details.append(
+                        {
+                            "TableName": table_name,
+                            "ItemCount": table_info.item_count,
+                        }
+                    )
+                except TableDoesNotExist:
+                    continue
 
-        except ClientError as e:
-            print(e.response["Error"]["Message"])
-            db_online = False
-            return {"DBOnline": db_online}
-        else:
             return {
-                "DBOnline": db_online,
-                "TableList": table_list["TableNames"],
+                "DBOnline": True,
+                "TableList": table_list,
                 "TableDetails": table_details,
             }
 
-    def sync_all_dynamodb_tables(self):
-        return
+        except Exception as e:
+            print(f"Error retrieving DynamoDB metadata: {str(e)}")
+            return {"DBOnline": False}
 
-    def sync_dynamodb_table(self):
-        return
+    def delete_table(self, table_name: str) -> bool:
+        try:
+            tables = self.connection.list_tables()
+            if not table_name in tables.values():
+                raise TableDoesNotExist(
+                    f"Error when deleting table. {table_name} does not exist"
+                )
+            self.connection.delete_table(table_name)
+            return True
+
+        except Exception as err:
+            print(err)
+            raise err
+
+    def delete_item(self, table_name: str, item_id) -> object:
+        return object()

@@ -10,7 +10,7 @@
         <h3>Products to Sync</h3>
         <ul>
             {% for product in products_to_sync %}
-            <li>{{ product.name }}</li>
+            <li>{{ product.title }}</li>
             {% endfor %}
             {% if products_to_sync|length == 0 %}
             <li>No products to sync.</li>
@@ -21,7 +21,7 @@
         <h3>Products in DynamoDB</h3>
         <ul>
             {% for product in products_in_store %}
-            <li>{{ product.name }}</li>
+            <li>{{ product.title }}</li>
             {% endfor %}
             {% if products_in_store|length == 0 %}
             <li>No products found in DynamoDB.</li>

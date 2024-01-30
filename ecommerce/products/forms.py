@@ -11,7 +11,7 @@ class ProductCreationForm(forms.ModelForm):
         model = Product
         fields = [
             "category",
-            "name",
+            "title",
             "description",
             "price",
             "available",
@@ -26,7 +26,7 @@ class ProductEditationForm(forms.ModelForm):
         model = Product
         fields = [
             "category",
-            "name",
+            "title",
             "description",
             "price",
             "available",

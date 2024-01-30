@@ -30,4 +30,5 @@ urlpatterns = [
     path("accounts/signup/", SignUpView.as_view(), name="signup"),  # Custom signup view
     path("accounts/login/", LoginView.as_view(), name="login"),  # Custom login view
     path("products/", include("products.urls")),
+    path("sync/", include("sync.urls")),
 ]
