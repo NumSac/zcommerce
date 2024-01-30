@@ -14,9 +14,6 @@ class Synchronization(models.Model):
         AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="synchronizations"
     )
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
     class Meta:
         ordering = ("name", "created_at")
 

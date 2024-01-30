@@ -1,3 +1,4 @@
+from typing import Any
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import TemplateView
 from django.views import View
@@ -15,6 +16,11 @@ from products.models import Product
 
 class DetailView(TemplateView):
     template_name = "sync/detail.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super(DetailView, self).get_context_data(**kwargs)
+        context["product"] = ProductRepository().get_item()
+        return context
 
 
 class SyncView(UserPassesTestMixin, View):
@@ -35,7 +41,9 @@ class SyncView(UserPassesTestMixin, View):
             local_product_list = Product.objects.filter(
                 owner=self.request.user, mark_for_sync=True
             )
-            registration_number = local_product_list.first().owner.registration_number
+            registration_number = (
+                local_product_list.first().owner.company.registration_number
+            )
             # If User has already created products
             if local_product_list.exists():
                 # Query DynamoDb per Repository for user products

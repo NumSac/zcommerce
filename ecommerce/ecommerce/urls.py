@@ -24,11 +24,12 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
     path("admin/aws/", include("aws.urls"), name="aws"),
     path("admin/", admin.site.urls),
-    path(
-        "accounts/", include("django.contrib.auth.urls")
-    ),  # Django's built-in auth views
+    path("accounts/", include("accounts.urls")),  # Django's built-in auth views
     path("accounts/signup/", SignUpView.as_view(), name="signup"),  # Custom signup view
     path("accounts/login/", LoginView.as_view(), name="login"),  # Custom login view
+    path(
+        "accounts/*", include("django.contrib.auth.urls")
+    ),  # Django's built-in auth views
     path("products/", include("products.urls")),
     path("sync/", include("sync.urls")),
 ]

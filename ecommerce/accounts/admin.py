@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser
+from .models import CustomUser, Company, CompanyProfile
 
 
 class CustomUserAdmin(UserAdmin):
@@ -13,11 +13,10 @@ class CustomUserAdmin(UserAdmin):
         "username",
         "is_staff",
         "is_company",
-        "company_name",
         "registration_number",
-        "vat_number",
-        "contact_person_name",
-    ]  # Update as needed
+        "company",
+    ]
+
     fieldsets = UserAdmin.fieldsets + (
         (
             None,
@@ -26,13 +25,12 @@ class CustomUserAdmin(UserAdmin):
                     "is_company",
                     "company_name",
                     "registration_number",
-                    "vat_number",
-                    "address",
-                    "contact_person_name",
+                    "company",
                 )
             },
         ),
     )
+
     add_fieldsets = UserAdmin.add_fieldsets + (
         (
             None,
@@ -41,9 +39,7 @@ class CustomUserAdmin(UserAdmin):
                     "is_company",
                     "company_name",
                     "registration_number",
-                    "vat_number",
-                    "address",
-                    "contact_person_name",
+                    "company",
                 )
             },
         ),
@@ -51,3 +47,5 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Company)
+admin.site.register(CompanyProfile)

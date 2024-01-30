@@ -4,4 +4,4 @@ from .views import SyncView
 
 app_name = "sync"
 
-urlpatterns = [path("", SyncView.as_view(), name="index"), path("<uuid:string>")]
+urlpatterns = [path("", SyncView.as_view(), name="index")]

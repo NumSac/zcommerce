@@ -6,7 +6,41 @@ from django.contrib.auth.forms import (
     UserChangeForm,
     AuthenticationForm,
 )
-from .models import CustomUser
+from .models import CustomUser, Company, CompanyProfile
+
+
+class CompanyEditForm(forms.ModelForm):
+    class Meta:
+        model = Company
+        fields = [
+            "company_name",
+            "vat_number",
+            "address",
+            "contact_person_name",
+        ]
+
+
+class CompanyProfileForm(forms.ModelForm):
+    class Meta:
+        model = CompanyProfile
+        fields = ["company_description", "company_background_image"]
+
+
+class CompanyForm(forms.ModelForm):
+    class Meta:
+        model = Company
+        fields = [
+            "company_name",
+            "vat_number",
+            "address",
+            "contact_person_name",
+        ]
+        widgets = {
+            "company_name": forms.TextInput(attrs={"class": "form-control"}),
+            "vat_number": forms.TextInput(attrs={"class": "form-control"}),
+            "address": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "contact_person_name": forms.TextInput(attrs={"class": "form-control"}),
+        }
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -17,25 +51,15 @@ class CustomUserCreationForm(UserCreationForm):
             "email",
             "password1",
             "password2",
-            "is_company",
-            "company_name",
-            "vat_number",
-            "address",
-            "contact_person_name",
         )
 
 
 class CustomUserChangeForm(UserChangeForm):
-    class Meta(UserChangeForm.Meta):
+    class Meta:
         model = CustomUser
         fields = (
             "username",
             "email",
-            "is_company",
-            "company_name",
-            "vat_number",
-            "address",
-            "contact_person_name",
         )
 
 
@@ -47,7 +71,6 @@ class CustomUserLoginForm(AuthenticationForm):
 
     def __init__(self, *args, **kwargs):
         super(CustomUserLoginForm, self).__init__(*args, **kwargs)
-        # You can add some customization here. For example, adding classes to your fields:
         self.fields["username"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Username"}
         )
