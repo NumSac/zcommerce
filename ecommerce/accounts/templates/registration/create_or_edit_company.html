@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{% if is_editing %}Edit{% else %}Create{% endif %} Company Profile</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ company_profile_form.as_p }}
+        {{ company_form.as_p }}
+        <button type="submit" class="btn btn-primary">{% if is_editing %}Save Changes{% else %}Create Profile{% endif %}</button>
+    </form>
+</div>
+{% endblock %}

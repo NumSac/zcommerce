@@ -8,12 +8,12 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
+    readonly_fields = ["registration_number"]
     list_display = [
         "email",
         "username",
         "is_staff",
         "is_company",
-        "registration_number",
         "company",
     ]
 
@@ -23,7 +23,6 @@ class CustomUserAdmin(UserAdmin):
             {
                 "fields": (
                     "is_company",
-                    "company_name",
                     "registration_number",
                     "company",
                 )
@@ -37,7 +36,6 @@ class CustomUserAdmin(UserAdmin):
             {
                 "fields": (
                     "is_company",
-                    "company_name",
                     "registration_number",
                     "company",
                 )

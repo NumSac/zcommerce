@@ -51,7 +51,7 @@ class Product(models.Model):
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
     def save(self, *args, **kwargs):
-        if not self.slug:  # If the slug is not set, generate one
+        if not self.slug:
             self.slug = slugify(self.title)
             original_slug = self.slug
 

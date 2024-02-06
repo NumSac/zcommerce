@@ -3,6 +3,17 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from ecommerce.constants import (
+    IS_REGISTERED,
+    CAN_PUBLISH_PRODUCTS,
+    CAN_PROCESS_ORDERS,
+    CAN_USE_CLIENT_CHAT,
+    CAN_BACKUP_ITEMS,
+    CAN_PROMOTE_PRODUCTS,
+    CAN_USE_ANALYTICS,
+    CAN_REQUEST_HELPDESK_BOT,
+)
+
 import uuid
 
 
@@ -23,7 +34,10 @@ class CompanyProfile(models.Model):
 
 
 class Company(models.Model):
-    company_profile = models.ForeignKey(
+    class Meta:
+        verbose_name_plural = "companies"
+
+    company_profile = models.OneToOneField(
         CompanyProfile, on_delete=models.CASCADE, related_name="company"
     )
     # Fields related to the company
@@ -49,24 +63,18 @@ class Company(models.Model):
         help_text=_("The name of the primary contact person for the company."),
     )
 
+    @property
+    def registration_number(self):
+        owner_instance = self.owner.first()  # Get the owner if it exists
+        if owner_instance:
+            return owner_instance.registration_number
+        return None
+
     def __str__(self):
         return self.company_name
 
-    def save(self, *args, **kwargs):
-        # Check if a CustomUser with the same registration_number exists
-        existing_user = CustomUser.objects.filter(
-            registration_number=self.registration_number
-        ).first()
 
-        if existing_user:
-            # Set the is_company attribute of the related CustomUser to True
-            existing_user.is_company = True
-            existing_user.save()
-
-        super(Company, self).save(*args, **kwargs)
-
-
-# CustomUser model with a ForeignKey to Company
+### CustomUser model with a ForeignKey to Company ###
 class CustomUser(AbstractUser):
     is_company = models.BooleanField(
         default=False, help_text=_("Designates whether this user is a company account.")
@@ -111,3 +119,38 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(email, password, **extra_fields)
+
+
+# Create Proxy models for representing different subscription permissions
+class BaseSubscription(CustomUser):
+    class Meta:
+        proxy = True
+        permissions = [
+            (IS_REGISTERED, "Has registered a company"),
+            (CAN_PUBLISH_PRODUCTS, "Can publish products"),
+            (CAN_PROCESS_ORDERS, "Can process orders"),
+        ]
+
+
+class SimpleSubscription(BaseSubscription):
+    class Meta(BaseSubscription.Meta):
+        proxy = True
+        permissions = [
+            (CAN_USE_CLIENT_CHAT, "Can use client chat"),
+            (CAN_BACKUP_ITEMS, "Can backup items"),
+        ]
+
+
+class MediumSubscription(SimpleSubscription):
+    class Meta(SimpleSubscription.Meta):
+        proxy = True
+        permissions = [(CAN_PROMOTE_PRODUCTS, "Can promote products")]
+
+
+class PremiumSubscription(MediumSubscription):
+    class Meta(MediumSubscription.Meta):
+        proxy = True
+        permissions = [
+            (CAN_USE_ANALYTICS, "Can use analytics"),
+            (CAN_REQUEST_HELPDESK_BOT, "Can request helpdesk bot"),
+        ]

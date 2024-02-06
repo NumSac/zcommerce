@@ -41,12 +41,13 @@ class SyncView(UserPassesTestMixin, View):
             local_product_list = Product.objects.filter(
                 owner=self.request.user, mark_for_sync=True
             )
-            registration_number = (
-                local_product_list.first().owner.company.registration_number
-            )
             # If User has already created products
             if local_product_list.exists():
                 # Query DynamoDb per Repository for user products
+
+                registration_number = (
+                    local_product_list.first().owner.company.registration_number
+                )
                 dynamodb_products = (
                     self.product_repo.get_products_by_registration_number(
                         str(registration_number)
@@ -71,7 +72,7 @@ class SyncView(UserPassesTestMixin, View):
                     "products_to_sync": [],
                     "products_in_store": [],
                 }
-            return render(request, "products/sync.html", context)
+            return render(request, "sync/index.html", context)
 
         except Exception as e:
             print(e)
